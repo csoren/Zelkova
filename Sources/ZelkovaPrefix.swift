@@ -31,7 +31,7 @@ public struct ZelkovaPrefix<Base>
 
 // MARK: ZelkovaPrefix + NSObject
 
-extension NSObject: ZelkovaPrefixProvider {}
+@objc extension NSObject: ZelkovaPrefixProvider {}
 
 extension ZelkovaPrefix where Base: NSObject
 {

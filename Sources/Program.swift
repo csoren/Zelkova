@@ -12,23 +12,23 @@ public final class Program<Model, Msg: Message>
 
     public typealias Send = (Msg) -> ()
 
-    private typealias _Automaton = ReactiveAutomaton.Automaton<Model, Msg>
+    public typealias Automaton = ReactiveAutomaton.Automaton<Model, Msg>
 
     public let rootViewController = UIViewController()
 
     private let _diffScheduler = QueueScheduler(qos: .userInteractive, name: "com.inamiy.Zelkova.diffScheduler")
 
-    private let _automaton: _Automaton
+    private let _automaton: Automaton
     private let _rootView: Property<UIView?>
 
     /// Beginner Program.
-    public convenience init<L: Layout>(model: Model, update: @escaping _Automaton.Mapping, view: @escaping (Model, @escaping Send) -> L)
+    public convenience init<L: Layout>(model: Model, update: @escaping Automaton.Mapping, view: @escaping (Model, @escaping Send) -> L)
     {
-        self.init(initial: (model, .empty), update: _compose(_toNextMapping, update), view: view)
+        self.init(initial: (model, .empty), update: { (state, input) in _toNextMapping(update(state, input)) }, view: view)
     }
 
     /// Non-beginner Program.
-    public init<L: Layout>(initial: (Model, Effect), update: @escaping _Automaton.NextMapping, view: @escaping (Model, @escaping Send) -> L)
+    public init<L: Layout>(initial: (Model, Effect), update: @escaping Automaton.NextMapping, view: @escaping (Model, @escaping Send) -> L)
     {
         let (inputSignal, inputObserver) = Signal<Msg, NoError>.pipe()
 
